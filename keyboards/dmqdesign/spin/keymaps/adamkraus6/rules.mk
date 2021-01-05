@@ -14,13 +14,12 @@ BOOTLOADER = atmel-dfu
 # Build Options
 #   change yes to no to disable
 #
-MOUSEKEY_ENABLE    = yes     # Mouse keys
 EXTRAKEY_ENABLE    = yes     # Audio control and System control
 NKRO_ENABLE        = yes     # USB Nkey Rollover
 ENCODER_ENABLE     = yes     # Enable rotary encoder support
 
-BOOTMAGIC_ENABLE   = lite   # Virtual DIP switch configuration
 LTO_ENABLE         = yes
-CONSOLE_ENABLE     = yes    # Console for debug
 
-OLED_DRIVER_ENABLE = no     # .91" I2C OLED
+OLED_DRIVER_ENABLE = yes     # .91" I2C OLED
+
+EXTRAFLAGS += -flto

@@ -167,8 +167,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     debug_keyboard = 0;
                     debug_matrix   = 0;
                 }
-                uprintf("DEBUG: enable=%u, keyboard=%u, matrix=%u\n", debug_enable, debug_keyboard, debug_matrix);
-                uprintln(QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION ", Built on: " QMK_BUILDDATE);
+//                uprintf("DEBUG: enable=%u, keyboard=%u, matrix=%u\n", debug_enable, debug_keyboard, debug_matrix);
+//                uprintln(QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION ", Built on: " QMK_BUILDDATE);
                 eeconfig_update_debug(debug_config.raw);
                 return false;
 
