@@ -99,6 +99,9 @@ const rgblight_segment_t *const PROGMEM _rgb_layers[] = {
 // clang-format off 
 
 const uint8_t PROGMEM _n_rgb_layers = sizeof(_rgb_layers) / sizeof(_rgb_layers[0]) - 1;
+uint8_t hue = 0;
+uint8_t sat = 0;
+uint8_t val = 0;
 
 void clear_rgb_layers(void) {
     dprint("clear_rgb_layers()\n");
@@ -243,86 +246,117 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 #ifdef OLED_DRIVER_ENABLE
 
 static const char *ANIMATION_NAMES[] = {
-	"unknown", // 0
-	"static", // 1
-	"breathing I", // 2
-	"breathing II", // 3
-	"breathing III", // 4
-	"breathing IV", // 5
-	"rainbow mood I", // 6
-	"rainbow mood II", // 7
-	"rainbow mood III", // 8
-	"rainbow swirl I", // 9
-	"rainbow swirl II", // 10
-	"rainbow swirl III", // 11
-	"rainbow swirl IV", // 12
-	"rainbow swirl V", // 13
-	"rainbow swirl VI", // 14
-	"snake I", // 15
-	"snake II", // 16
-	"snake III", // 17
-	"snake IV", // 18
-	"snake V", // 19
-	"snake VI", // 20
-	"knight I", // 21
-	"knight II", // 22
-	"knight III", // 23
+	"unkno", // 0
+	"statc", // 1
+	"brea1", // 2
+	"brea2", // 3
+	"brea3", // 4
+	"brea4", // 5
+	"mood1", // 6
+	"mood2", // 7
+	"mood3", // 8
+	"swrl1", // 9
+	"swrl2", // 10
+	"swrl3", // 11
+	"swrl4", // 12
+	"swrl5", // 13
+	"swrl6", // 14
+	"snak1", // 15
+	"snak2", // 16
+	"snak3", // 17
+	"snak4", // 18
+	"snak5", // 19
+	"snak6", // 20
+	"kngt1", // 21
+	"kngt2", // 22
+	"kngt3", // 23
 //    "christmas",
-	"static gradient I", // 24
-	"static gradient II", // 25
-	"static gradient III", // 26
-	"static gradient IV", // 27
-	"static gradient V", // 28
-	"static gradient VI", // 29
-	"static gradient VII", // 30
-	"static gradient VIII", // 31
-	"static gradient IX", // 32
-	"static gradient X", // 33
+	"grad1", // 24
+	"grad2", // 25
+	"grad3", // 26
+	"grad4", // 27
+	"grad5", // 28
+	"grad6", // 29
+	"grad7", // 30
+	"grad8", // 31
+	"grad9", // 32
+	"grad0", // 33
 //	"rgb test",
-	"alternating", // 34
-	"twinkle I", // 35
-	"twinkle II", // 36
-	"twinkle III", // 37
-	"twinkle IV", // 38
-	"twinkle V", // 39
-	"twinkle VI" // 40
+	"alter", // 34
+	"twnk1", // 35
+	"twnk2", // 36
+	"twnk3", // 37
+	"twnk4", // 38
+	"twnk5", // 39
+	"twnk6" // 40
 };
 
 void rgblight_get_mode_name(uint8_t mode, size_t bufsize, char *buf) {
-    snprintf(buf, bufsize, "%-25s", ANIMATION_NAMES[mode]);
+    snprintf(buf, bufsize, "%-5s", ANIMATION_NAMES[mode]);
 }
 
+void rgblight_format(size_t bufsize, char *buf, uint8_t target) {
+    snprintf(buf, bufsize, "%-3u", target);
+}
+
+// static void render_logo(void) {
+//     static const char PROGMEM qmk_logo[] = {
+//         0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x93, 0x94,
+//         0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAE, 0xAF, 0xB0, 0xB1, 0xB2, 0xB3, 0xB4,
+//         0xC0, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8, 0xC9, 0xCA, 0xCB, 0xCC, 0xCD, 0xCE, 0xCF, 0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0x00
+//     };
+//     oled_write_P(qmk_logo, false);
+// }
+
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-    #ifdef LEFT_HAND
-        return OLED_ROTATION_180;
-    #else
-        return OLED_ROTATION_0;
-    #endif
+    return OLED_ROTATION_90;
 }
 
 void oled_task_user(void) {
     // Host Keyboard Layer Status
-    oled_write_P(PSTR("Layer: "), false);
+    oled_write_P(PSTR("Layer"), false);
 
     switch (get_highest_layer(layer_state)) {
         case _NUMPAD:
-            oled_write_P(PSTR("Numpad\n"), false);
+            oled_write_P(PSTR("Num\n"), false);
             break;
         case _RGB:
             oled_write_P(PSTR("RGB\n"), false);
             break;
         case _MACRO:
-            oled_write_P(PSTR("Macro\n"), false);
+            oled_write_P(PSTR("Macro"), false);
             break;
+	case  _FN:
+	    oled_write_P(PSTR("Spoop"), false);
+	    break;
         default:
             // Or use the write_ln shortcut over adding '\n' to the end of your string
-            oled_write_ln_P(PSTR("Undefined"), false);
+            oled_write_P(PSTR("Undef"), false);
     }
 
-    static char rgb_mode_name[30];
+    static char rgb_mode_name[10];
     rgblight_get_mode_name(rgblight_get_mode(), sizeof(rgb_mode_name), rgb_mode_name);
 
-    oled_write_P(PSTR("Mode: "), false);
+    oled_write_P(PSTR("Mode\n"), false);
     oled_write_ln(rgb_mode_name, false);
+
+    oled_write_P(PSTR("Other"), false);
+
+    static char rgb_hue[10];
+    rgblight_format(sizeof(rgb_hue), rgb_hue, rgblight_get_hue());
+    oled_write_P(PSTR("h"), false);
+    oled_write_ln(rgb_hue, false);
+
+    static char rgb_sat[10];
+    rgblight_format(sizeof(rgb_sat), rgb_sat, rgblight_get_sat());
+    oled_write_P(PSTR("s"), false);
+    oled_write_ln(rgb_sat, false);
+
+    static char rgb_val[10];
+    rgblight_format(sizeof(rgb_val), rgb_val, rgblight_get_val());
+    oled_write_P(PSTR("v"), false);
+    oled_write_ln(rgb_val, false);
+
+//    render_logo();
 }
 #endif
