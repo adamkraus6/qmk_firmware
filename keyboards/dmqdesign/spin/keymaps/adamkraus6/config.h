@@ -16,7 +16,7 @@
 
 #pragma once
 
-#define RGBLIGHT_HUE_STEP 8
+#define RGBLIGHT_HUE_STEP 4
 
 // For RGB LEDs
 #define NO_ACTION_ONESHOT
@@ -40,7 +40,3 @@
 #define RGBLIGHT_LAYER_BLINK
 #define RGBLIGHT_LAYERS_OVERRIDE_RGB_OFF
 
-// Use one or the other, determines the orientation of
-// the OLED display
-#define RIGHT_HAND
-// #define LEFT_HAND

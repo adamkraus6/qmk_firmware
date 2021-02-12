@@ -17,9 +17,7 @@ BOOTLOADER = atmel-dfu
 EXTRAKEY_ENABLE    = yes     # Audio control and System control
 NKRO_ENABLE        = yes     # USB Nkey Rollover
 ENCODER_ENABLE     = yes     # Enable rotary encoder support
-
 LTO_ENABLE         = yes
-
 OLED_DRIVER_ENABLE = yes     # .91" I2C OLED
 
 EXTRAFLAGS += -flto

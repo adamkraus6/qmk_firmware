@@ -22,6 +22,8 @@
 
 enum layers { _NUMPAD, _MACRO, _RGB, _FN };
 
+bool isCapped = false;
+
 enum layer_base {
     LAYER_BASE     = _NUMPAD,
     LAYER_BASE_END = _FN + 1,
@@ -47,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_MPRV,   KC_MPLY,   KC_MNXT,   KC_TRNS, 
         KC_NO,     KC_UP,     KC_NO,     KC_TRNS,
         KC_LEFT,   KC_DOWN,   KC_RIGHT,  KC_TRNS,
-        MO(_FN),   KC_NO,     KC_ENTER
+        MO(_FN),   KC_CAPS,   KC_ENTER
         ),
 
     [_RGB] = LAYOUT(
@@ -89,7 +91,7 @@ const rgblight_segment_t *const PROGMEM _rgb_layers[] = {
     [LAYER_OFFSET + 1] = _macro_layer,
     [LAYER_OFFSET + 2] = _rgb_layer,
     [LAYER_OFFSET + 3] = _fn_layer,
-   
+
     [ACK_OFFSET + ACK_NO] = _no_layer,
     [ACK_OFFSET + ACK_YES] = _yes_layer,
     [ACK_OFFSET + ACK_MEH] = _meh_layer,
@@ -157,6 +159,9 @@ void eeconfig_init_user(void) { spidey_glow(); }
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
         switch (keycode) {
+            case KC_CAPS:
+		isCapped = !isCapped;
+		break;
             // Re-implement this here, but fix the persistence!
             case DEBUG:
                 if (!debug_enable) {
@@ -174,7 +179,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //                uprintln(QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION ", Built on: " QMK_BUILDDATE);
                 eeconfig_update_debug(debug_config.raw);
                 return false;
-
                 // clang-format off
             case CH_CPNL: host_consumer_send(AL_CONTROL_PANEL); return false;
             case CH_ASST: host_consumer_send(AL_ASSISTANT); return false;
@@ -357,6 +361,13 @@ void oled_task_user(void) {
     oled_write_P(PSTR("v"), false);
     oled_write_ln(rgb_val, false);
 
-//    render_logo();
+    oled_write_P(PSTR("\n"), false);
+
+//     static char sys_volume[10];
+//     rgblight_format(sizeof(sys_volume), sys_volume, volume);
+//     oled_write_P(PSTR("vo"), false);
+//     oled_write_ln(sys_volume, false);
+
+    oled_write_P(PSTR(" CAP "), isCapped);
 }
 #endif
